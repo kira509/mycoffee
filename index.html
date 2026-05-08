@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brew Haven Coffee | Artisanal Blends</title>
+  <!-- Google Fonts for a premium look -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <h1 class="logo">Brew Haven</h1>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="hero-text">
+      <h2>Freshly Brewed, Always For You</h2>
+      <p>Discover the aroma that makes mornings magical.</p>
+      <p id="status-bubble"></p>
+      <a href="#menu" class="btn">Explore Menu</a>
+    </div>
+  </section>
+
+  <section id="menu" class="menu">
+    <h2 class="section-title">Our Menu</h2>
+    <div class="menu-items">
+      <div class="item">
+        <img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?q=80&w=500" alt="Espresso">
+        <h3>Espresso</h3>
+        <p>Rich and bold, the heart of all coffee.</p>
+      </div>
+      <div class="item">
+        <img src="https://images.unsplash.com/photo-1534706936160-d5bb61c27e78?q=80&w=500" alt="Cappuccino">
+        <h3>Cappuccino</h3>
+        <p>Balanced with perfect foam and taste.</p>
+      </div>
+      <div class="item">
+        <img src="https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=500" alt="Latte">
+        <h3>Latte</h3>
+        <p>Creamy smoothness topped with art.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <h2 class="section-title">About Us</h2>
+    <div class="about-content">
+      <p>Brew Haven is a cozy corner where coffee meets art and community. We source ethically grown beans, roast in-house, and craft every cup with care.</p>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <h2 class="section-title">Contact Us</h2>
+    <form id="contactForm">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="email" id="email" placeholder="Your Email" required />
+      <textarea id="message" placeholder="Your Message" required></textarea>
+      <button type="submit" class="btn" id="submitBtn">Send Message</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Brew Haven Coffee. Made with &hearts; for coffee lovers.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
