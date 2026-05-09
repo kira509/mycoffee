@@ -14,27 +14,27 @@
   //}
   
   // 2. Handle Contact Form Submission
-  const contactForm = document.querySelector("#contactForm");
-  const submitBtn = document.querySelector("#submitBtn");
-  
-  contactForm.addEventListener("submit", function (e) {
-    e.preventDefault();
+//  const contactForm = document.querySelector("#contactForm");
+ // const submitBtn = document.querySelector("#submitBtn");
+//  
+//  contactForm.addEventListener("submit", function (e) {
+  //  e.preventDefault();
     
     // Visual feedback
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = "Sending...";
-    submitBtn.disabled = true;
+  // const originalText = submitBtn.textContent;
+   // submitBtn.textContent = "Sending...";
+  ///  submitBtn.disabled = true;
   
     // Simulate a network request
-    setTimeout(() => {
-      alert("Thanks for contacting Brew Haven! We'll get back to you soon ☕");
-      contactForm.reset();
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
-    }, 1200);
-  });
+   // setTimeout(() => {
+   //   alert("Thanks for contacting Brew Haven! We'll get back to you soon ☕");
+     // contactForm.reset();
+     // submitBtn.textContent = originalText;
+     // submitBtn.disabled = false;
+ //   }, 1200);
+  //});
   
   // Initialize
-  document.addEventListener("DOMContentLoaded", () => {
-    updateShopStatus();
-  });
+//  document.addEventListener("DOMContentLoaded", () => {
+ //   updateShopStatus();
+//  });
