@@ -863,15 +863,15 @@
     <div class="info-block reveal">
       <p class="section-label">Opening Hours</p>
       <h3 class="section-title">Come find us</h3>
-      <ul class="hours-list" id="hours-list">
-        <li data-day="1" data-close="19"><span>Monday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
-        <li data-day="2" data-close="19"><span>Tuesday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
-        <li data-day="3" data-close="19"><span>Wednesday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
-        <li data-day="4" data-close="20"><span>Thursday</span><span class="time-text">7:00 am – 8:00 pm</span></li>
-        <li data-day="5" data-close="21"><span>Friday</span><span class="time-text">7:00 am – 9:00 pm</span></li>
-        <li data-day="6" data-close="21"><span>Saturday</span><span class="time-text">8:00 am – 9:00 pm</span></li>
-        <li data-day="0" data-close="18"><span>Sunday</span><span class="time-text">9:00 am – 6:00 pm</span></li>
-      </ul>
+     <ul class="hours-list" id="hours-list">
+  <li data-day="1" data-open="7" data-close="19"><span>Monday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
+  <li data-day="2" data-open="7" data-close="19"><span>Tuesday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
+  <li data-day="3" data-open="7" data-close="19"><span>Wednesday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
+  <li data-day="4" data-open="7" data-close="20"><span>Thursday</span><span class="time-text">7:00 am – 8:00 pm</span></li>
+  <li data-day="5" data-open="7" data-close="21"><span>Friday</span><span class="time-text">7:00 am – 9:00 pm</span></li>
+  <li data-day="6" data-open="8" data-close="21"><span>Saturday</span><span class="time-text">8:00 am – 9:00 pm</span></li>
+  <li data-day="0" data-open="9" data-close="18"><span>Sunday</span><span class="time-text">9:00 am – 6:00 pm</span></li>
+</ul>
     </div>
     <div class="info-block reveal">
       <p class="section-label">Location</p>
@@ -923,46 +923,47 @@
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     // Dynamic Live Hours Logic
-    function updateHours() {
-      const now = new Date();
-      const currentDay = now.getDay(); // 0 (Sun) to 6 (Sat)
-      const currentHour = now.getHours(); // 0 to 23
-      const daysList = document.querySelectorAll('#hours-list li');
+   function updateHours() {
+  const now = new Date();
+  const currentDay = now.getDay(); 
+  const currentHour = now.getHours(); 
+  const daysList = document.querySelectorAll('#hours-list li');
 
-      daysList.forEach(item => {
-        const itemDay = parseInt(item.getAttribute('data-day'));
-        const closingHour = parseInt(item.getAttribute('data-close'));
+  daysList.forEach(item => {
+    const itemDay = parseInt(item.getAttribute('data-day'));
+    const openHour = parseInt(item.getAttribute('data-open'));
+    const closeHour = parseInt(item.getAttribute('data-close'));
 
-        // Reset classes
-        item.classList.remove('hours-today', 'hours-passed');
+    // 1. Reset all states first
+    item.classList.remove('hours-today', 'hours-passed');
 
-        // Logic for highlighting today vs past vs future
-        if (itemDay === currentDay) {
-          // It's today!
-          item.classList.add('hours-today');
-          
-          // Check if the shop has closed for the day
-          if (currentHour >= closingHour) {
-            item.classList.add('hours-passed');
-          }
-        } else {
-          // For future days vs past days of the week
-          // We convert both to a comparable "week distance"
-          // This makes Monday (1) come before Friday (5)
-          // Sunday (0) is tricky, we treat it as 7 for simple order check if needed
-          let currentOrder = currentDay === 0 ? 7 : currentDay;
-          let itemOrder = itemDay === 0 ? 7 : itemDay;
+    // 2. Identify "Today"
+    if (itemDay === currentDay) {
+      item.classList.add('hours-today');
 
-          if (itemOrder < currentOrder) {
-            item.classList.add('hours-passed');
-          }
-        }
-      });
+      // 3. Check if we are currently OUTSIDE opening hours
+      // If it's before 7am OR after 7pm, cross it out
+      if (currentHour < openHour || currentHour >= closeHour) {
+        item.classList.add('hours-passed');
+      } 
+      // If we are between 7am and 7pm, the 'hours-passed' class is NOT added,
+      // so the strike-through disappears and it shows as active.
+    } else {
+      // Logic for other days of the week (non-today)
+      // They remain crossed out if they are in the past
+      let currentOrder = currentDay === 0 ? 7 : currentDay;
+      let itemOrder = itemDay === 0 ? 7 : itemDay;
+      if (itemOrder < currentOrder) {
+        item.classList.add('hours-passed');
+      }
     }
+  });
+}
 
-    // Run immediately and then every minute to keep it live
-    updateHours();
-    setInterval(updateHours, 60000);
+// Initial run
+updateHours();
+// Check every 60 seconds so it switches automatically at 7:00 AM/PM
+setInterval(updateHours, 60000);
   </script>
 </body>
 </html>
