@@ -3,75 +3,257 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brew Haven Coffee | Artisanal Blends</title>
-  <!-- Google Fonts for a premium look -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <title>Ember & Ground — Specialty Coffee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #F5EFE0;
+      --parchment: #EDE4CE;
+      --caramel:  #C8872A;
+      --espresso: #2B1A0E;
+      --bark:     #5C3A1E;
+      --ash:      #8A7560;
+      --white:    #FDFAF4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--espresso);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── Custom cursor (Desktop Only) ── */
+    .cursor, .cursor-ring { display: none; }
+
+    @media (hover: hover) and (pointer: fine) {
+      body { cursor: none; }
+      .cursor {
+        display: block; width: 10px; height: 10px;
+        background: var(--caramel); border-radius: 50%;
+        position: fixed; top: 0; left: 0;
+        pointer-events: none; z-index: 9999;
+        transition: transform 0.15s ease, background 0.3s;
+        transform: translate(-50%, -50%);
+      }
+      .cursor-ring {
+        display: block; width: 36px; height: 36px;
+        border: 1.5px solid var(--caramel); border-radius: 50%;
+        position: fixed; top: 0; left: 0;
+        pointer-events: none; z-index: 9998;
+        transition: transform 0.35s ease, opacity 0.3s;
+        transform: translate(-50%, -50%);
+        opacity: 0.5;
+      }
+    }
+
+    /* ── Noise overlay ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03; pointer-events: none; z-index: 1000;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 500; display: flex; align-items: center; justify-content: space-between;
+      padding: 1.6rem 4rem; mix-blend-mode: multiply;
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--espresso); }
+    .nav-links { display: flex; gap: 2.8rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--bark); font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; transition: color 0.25s; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--caramel); transition: width 0.3s ease; }
+    .nav-links a:hover { color: var(--caramel); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── Hero ── */
+    .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; overflow: hidden; }
+    .hero-left { display: flex; flex-direction: column; justify-content: flex-end; padding: 0 4rem 6rem; position: relative; z-index: 2; }
+    .hero-tag { font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--caramel); margin-bottom: 1.6rem; opacity: 0; animation: fadeUp 0.8s 0.3s forwards; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(4rem, 7vw, 7rem); line-height: 0.95; font-weight: 900; color: var(--espresso); opacity: 0; animation: fadeUp 0.9s 0.5s forwards; }
+    .hero-title em { font-style: italic; color: var(--caramel); }
+    .hero-sub { margin-top: 2rem; max-width: 380px; font-size: 0.95rem; line-height: 1.75; color: var(--ash); opacity: 0; animation: fadeUp 0.9s 0.75s forwards; }
+    .hero-cta { margin-top: 3rem; display: flex; gap: 1.4rem; align-items: center; opacity: 0; animation: fadeUp 0.9s 1s forwards; }
+    
+    .btn-primary { background: var(--espresso); color: var(--cream); padding: 1rem 2.4rem; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; border: none; transition: background 0.3s, transform 0.2s; text-decoration: none; display: inline-block; }
+    .btn-primary:hover { background: var(--bark); transform: translateY(-2px); }
+    .btn-text { font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ash); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.25s; }
+    .btn-text:hover { color: var(--caramel); }
+    .btn-text::after { content: '→'; transition: transform 0.25s; }
+    .btn-text:hover::after { transform: translateX(4px); }
+
+    .hero-right { position: relative; overflow: hidden; }
+    .hero-img-wrap { position: absolute; inset: 0; opacity: 0; animation: fadeIn 1.2s 0.2s forwards; }
+    .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.2) contrast(1.1); }
+    .hero-img-wrap::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, var(--cream) 0%, transparent 30%); z-index: 1; }
+
+    /* Steam animation */
+    .steam-wrap { position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%); z-index: 2; }
+    .steam { display: flex; gap: 8px; }
+    .steam span { display: block; width: 4px; height: 40px; border-radius: 4px; background: rgba(245, 239, 224, 0.6); animation: steam 2s ease-in-out infinite; transform-origin: bottom; }
+    .steam span:nth-child(2) { animation-delay: 0.4s; height: 55px; }
+    .steam span:nth-child(3) { animation-delay: 0.8s; height: 35px; }
+    @keyframes steam { 0%, 100% { transform: scaleX(1) translateY(0); opacity: 0.5; } 50% { transform: scaleX(1.4) translateY(-12px); opacity: 0.8; } }
+
+    .hero-year { position: absolute; bottom: 3rem; right: 3rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.85rem; color: var(--ash); letter-spacing: 0.08em; z-index: 2; }
+
+    /* ── Marquee ── */
+    .marquee-section { background: var(--espresso); padding: 1.2rem 0; overflow: hidden; }
+    .marquee-track { display: flex; animation: marquee 18s linear infinite; white-space: nowrap; }
+    .marquee-item { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: var(--caramel); padding: 0 3rem; flex-shrink: 0; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── Reveal Animations ── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── About & Menu ── */
+    .about { display: grid; grid-template-columns: 1fr 1fr; min-height: 70vh; }
+    .about-visual { background: var(--parchment); position: relative; overflow: hidden; min-height: 500px; }
+    .about-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 110px; height: 110px; border-radius: 50%; background: var(--caramel); display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--cream); }
+    .about-content { padding: 6rem 5rem; display: flex; flex-direction: column; justify-content: center; }
+    
+    .menu-section { padding: 8rem 4rem; background: var(--espresso); text-align: center; color: var(--cream); }
+    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 1100px; margin: 3rem auto 0; }
+    .menu-card { background: rgba(255,255,255,0.04); padding: 2rem; border-radius: 8px; transition: transform 0.3s; }
+    .menu-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.07); }
+    .menu-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--caramel); }
+    .menu-price { font-weight: bold; margin-top: 1rem; display: block; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (max-width: 900px) {
+      .hero, .about { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      nav { padding: 1.5rem 2rem; }
+      .nav-links { display: none; }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <h1 class="logo">Brew Haven</h1>
-      <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#menu">Menu</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <section id="home" class="hero">
-    <div class="hero-text">
-      <h2>Freshly Brewed, Always For You</h2>
-      <p>Discover the aroma that makes mornings magical.</p>
-      <p id="status-bubble"></p>
-      <a href="#menu" class="btn">Explore Menu</a>
-    </div>
-  </section>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
-  <section id="menu" class="menu">
-    <h2 class="section-title">Our Menu</h2>
-    <div class="menu-items">
-      <div class="item">
-        <img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?q=80&w=500" alt="Espresso">
-        <h3>Espresso</h3>
-        <p>Rich and bold, the heart of all coffee.</p>
-      </div>
-      <div class="item">
-        <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500" alt="Cappuccino">
-        <h3>Cappuccino</h3>
-        <p>Balanced with perfect foam and taste.</p>
-      </div>
-      <div class="item">
-        <img src="https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=500" alt="Latte">
-        <h3>Latte</h3>
-        <p>Creamy smoothness topped with art.</p>
+  <nav>
+    <div class="nav-logo">Ember & Ground</div>
+    <ul class="nav-links">
+      <li><a href="#about">Story</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#visit">Visit</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-tag">Specialty Coffee · Est. 2009</p>
+      <h1 class="hero-title">Where Every<br><em>Cup</em><br>Tells a Story</h1>
+      <p class="hero-sub">Single-origin beans sourced directly from farmers, roasted in small batches with unhurried intention.</p>
+      <div class="hero-cta">
+        <a href="#menu" class="btn-primary">Explore Menu</a>
+        <a href="#about" class="btn-text">Our Craft</a>
       </div>
     </div>
+    <div class="hero-right">
+      <div class="hero-img-wrap">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1920" alt="Coffee">
+      </div>
+      <div class="steam-wrap">
+        <div class="steam"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+    <div class="hero-year">Since 2009</div>
   </section>
+
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item">ETHICALLY SOURCED •</div>
+      <div class="marquee-item">ROASTED IN HOUSE •</div>
+      <div class="marquee-item">SINGLE ORIGIN •</div>
+      <div class="marquee-item">ARTISAN BREWING •</div>
+      <div class="marquee-item">ETHICALLY SOURCED •</div>
+      <div class="marquee-item">ROASTED IN HOUSE •</div>
+    </div>
+  </div>
 
   <section id="about" class="about">
-    <h2 class="section-title">About Us</h2>
-    <div class="about-content">
-      <p>Brew Haven is a cozy corner where coffee meets art and community. We source ethically grown beans, roast in-house, and craft every cup with care.</p>
+    <div class="about-visual reveal">
+      <div class="about-badge">
+        <span style="font-size: 2rem; font-weight: 900;">16</span>
+        <span style="text-transform: uppercase; font-size: 0.7rem;">Years</span>
+      </div>
+    </div>
+    <div class="about-content reveal">
+      <p style="color: var(--caramel); text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem;">Our Story</p>
+      <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin: 1rem 0;">Fire and earth.</h2>
+      <p style="line-height: 1.8; color: var(--ash);">Ember & Ground began with a relentless curiosity for how soil and heat transform a simple bean into a daily ritual.</p>
     </div>
   </section>
 
-  <section id="contact" class="contact">
-    <h2 class="section-title">Contact Us</h2>
-    <form id="contactForm">
-      <input type="text" id="name" placeholder="Your Name" required />
-      <input type="email" id="email" placeholder="Your Email" required />
-      <textarea id="message" placeholder="Your Message" required></textarea>
-      <button type="submit" class="btn" id="submitBtn">Send Message</button>
-    </form>
+  <section id="menu" class="menu-section">
+    <div class="reveal">
+      <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem;">The Daily Edit</h2>
+      <p style="color: var(--ash);">Selected brews for the season.</p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card reveal">
+        <h3 class="menu-name">Heirloom Espresso</h3>
+        <p>Notes of dark chocolate and plum.</p>
+        <span class="menu-price">$4.50</span>
+      </div>
+      <div class="menu-card reveal">
+        <h3 class="menu-name">Oatwood Latte</h3>
+        <p>Double shot with creamy oat milk.</p>
+        <span class="menu-price">$6.00</span>
+      </div>
+      <div class="menu-card reveal">
+        <h3 class="menu-name">V60 Pour Over</h3>
+        <p>Precision brewed single origin.</p>
+        <span class="menu-price">$5.50</span>
+      </div>
+    </div>
   </section>
 
-  <footer>
-    <p>&copy; 2026 Brew Haven Coffee. Made with &hearts; for coffee lovers.</p>
-  </footer>
+  <script>
+    // Custom cursor logic
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
 
-  <script src="script.js"></script>
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+    (function loop() {
+      rx += (mx - rx) * 0.15;
+      ry += (my - ry) * 0.15;
+      if(cursor) {
+        cursor.style.left = mx + 'px';
+        cursor.style.top = my + 'px';
+        ring.style.left = rx + 'px';
+        ring.style.top = ry + 'px';
+      }
+      requestAnimationFrame(loop);
+    })();
+
+    // Intersection Observer for scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
