@@ -559,9 +559,23 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       font-size: 0.9rem;
       color: rgba(245,239,224,0.55);
+      position: relative;
     }
     .hours-list li:last-child { border-bottom: none; }
     .hours-list li span:first-child { color: var(--cream); font-weight: 500; }
+    
+    /* Striking through when passed */
+    .hours-passed { opacity: 0.25; }
+    .hours-passed .time-text { text-decoration: line-through; }
+    .hours-passed::after {
+      content: 'CLOSED';
+      position: absolute; right: 0;
+      font-size: 0.6rem; letter-spacing: 0.1em;
+      color: var(--caramel);
+      transform: translateY(-50%); top: 50%;
+      background: var(--espresso); padding-left: 10px;
+    }
+
     .hours-today { color: var(--caramel) !important; }
 
     .address-text {
@@ -850,14 +864,14 @@
       <p class="section-label">Opening Hours</p>
       <h3 class="section-title">Come find us</h3>
       <ul class="hours-list" id="hours-list">
-  <li data-day="1"><span>Monday</span><span>7:00 am – 7:00 pm</span></li>
-  <li data-day="2"><span>Tuesday</span><span>7:00 am – 7:00 pm</span></li>
-  <li data-day="3"><span>Wednesday</span><span>7:00 am – 7:00 pm</span></li>
-  <li data-day="4"><span>Thursday</span><span>7:00 am – 8:00 pm</span></li>
-  <li data-day="5"><span>Friday</span><span>7:00 am – 9:00 pm</span></li>
-  <li data-day="6"><span>Saturday</span><span>8:00 am – 9:00 pm</span></li>
-  <li data-day="0"><span>Sunday</span><span>9:00 am – 6:00 pm</span></li>
-</ul>
+        <li data-day="1" data-close="19"><span>Monday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
+        <li data-day="2" data-close="19"><span>Tuesday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
+        <li data-day="3" data-close="19"><span>Wednesday</span><span class="time-text">7:00 am – 7:00 pm</span></li>
+        <li data-day="4" data-close="20"><span>Thursday</span><span class="time-text">7:00 am – 8:00 pm</span></li>
+        <li data-day="5" data-close="21"><span>Friday</span><span class="time-text">7:00 am – 9:00 pm</span></li>
+        <li data-day="6" data-close="21"><span>Saturday</span><span class="time-text">8:00 am – 9:00 pm</span></li>
+        <li data-day="0" data-close="18"><span>Sunday</span><span class="time-text">9:00 am – 6:00 pm</span></li>
+      </ul>
     </div>
     <div class="info-block reveal">
       <p class="section-label">Location</p>
@@ -908,26 +922,47 @@
     }, { threshold: 0.12 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Live Opening Hours Logic
-function highlightCurrentDay() {
-  const currentDay = new Date().getDay(); // 0 (Sun) to 6 (Sat)
-  const days = document.querySelectorAll('#hours-list li');
-  
-  days.forEach(day => {
-    // Check if the data-day attribute matches the current day index
-    if (parseInt(day.getAttribute('data-day')) === currentDay) {
-      // Apply the highlight style to both spans inside the li
-      day.style.color = 'var(--caramel)';
-      day.querySelectorAll('span').forEach(span => {
-        span.style.color = 'var(--caramel)';
-        span.style.fontWeight = '700';
+    // Dynamic Live Hours Logic
+    function updateHours() {
+      const now = new Date();
+      const currentDay = now.getDay(); // 0 (Sun) to 6 (Sat)
+      const currentHour = now.getHours(); // 0 to 23
+      const daysList = document.querySelectorAll('#hours-list li');
+
+      daysList.forEach(item => {
+        const itemDay = parseInt(item.getAttribute('data-day'));
+        const closingHour = parseInt(item.getAttribute('data-close'));
+
+        // Reset classes
+        item.classList.remove('hours-today', 'hours-passed');
+
+        // Logic for highlighting today vs past vs future
+        if (itemDay === currentDay) {
+          // It's today!
+          item.classList.add('hours-today');
+          
+          // Check if the shop has closed for the day
+          if (currentHour >= closingHour) {
+            item.classList.add('hours-passed');
+          }
+        } else {
+          // For future days vs past days of the week
+          // We convert both to a comparable "week distance"
+          // This makes Monday (1) come before Friday (5)
+          // Sunday (0) is tricky, we treat it as 7 for simple order check if needed
+          let currentOrder = currentDay === 0 ? 7 : currentDay;
+          let itemOrder = itemDay === 0 ? 7 : itemDay;
+
+          if (itemOrder < currentOrder) {
+            item.classList.add('hours-passed');
+          }
+        }
       });
     }
-  });
-}
 
-// Run the function
-highlightCurrentDay();
+    // Run immediately and then every minute to keep it live
+    updateHours();
+    setInterval(updateHours, 60000);
   </script>
 </body>
 </html>
